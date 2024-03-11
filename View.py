@@ -8,6 +8,7 @@ from PIL import ImageTk, Image  # pip install Pillow
 
 class View(Tk):
     def __init__(self, controller, model): # Kui vaade luuakse, siis kontrollerile peab olema ligipääs
+
         # Sulgudes on muutujate nimed
         super().__init__()  # Selleks, et View fail meil põhiaknana toimiks, tuleb kirjutada see super..., mainwindowina
         self.__controller = controller  # Vaja muuta need klassisiseselt kättesaadavaks teha
@@ -61,6 +62,7 @@ class View(Tk):
         if messagebox.askokcancel("Väljumine", "Kas soovid mängust väljuda?"):
             self.destroy()
     # Kõik muutujatele oleks tarvis getterid
+
     @property
     def btn_new(self):
         return self.__btn_new
@@ -135,7 +137,6 @@ class View(Tk):
         # return new, cancel, send- Tagastab need kolm asja, õiges järjekorras tuleb kirjutada nagu on-
         # üleval kui sai init all loodud create_buttons klass
 
-
     def create_labels(self):
         # Entry label ei muutu kunagi
         Label(self.__frame_top, text='Sisesta täht', anchor='w',
@@ -188,7 +189,11 @@ class View(Tk):
 
 def show_message(result):
     if result == "won":
+
+        messagebox.showinfo("Võitsid!", f'Palju õnne, arvasid sõna ära!')
+
         messagebox.showinfo("Võitsid!", "Palju õnne, arvasid sõna ära!")
+
     if result == "lose":
         messagebox.showinfo("Kaotasid!", "Kaotasid, kas mängime veel?")
 
@@ -229,10 +234,7 @@ def draw_scoreboard(frame, data):  # Need kaks asja saame sellestsamastt kontrol
             sec = time.strftime('%T', time.gmtime(p.seconds))
             time.strftime('%T', time.gmtime(p.seconds))
             my_table.insert(parent='', index='end', iid=str(x), text='',
-                            values=(p.name, p.word, p.missing, p.seconds, dt))
+                            values=(p.name, p.word, p.missing, sec, dt))
             x += 1
 
         my_table.pack(expand=TRUE, fill=BOTH)
-
-
-
