@@ -41,7 +41,7 @@ class Controller:
         # Muuda pilti id-ga 0
         self.__view.change_image(0)     # id on null. Modelis __init__'s on juba tehtud png laiendiga piltidest list
         self.__model.setup_new_game()
-        self.__view.lbl_result.config(text=self.__model.hidden_word)
+        self.__view.lbl_result['text'] = self.__model.correct_letters
         self.__view.lbl_error.config(text='Vigased tähed:', fg='red')
         self.__game_time.reset()
         self.__game_time.start()
@@ -66,9 +66,10 @@ class Controller:
             show_message('lose')
             return
         self.__model.process_user_input(self.__view.char_input.get())
-        self.__view.lbl_result.config(text=self.__model.hidden_word)
-        vigased = "Vigased tähed: " + self.__model.list_to_string().upper()
-        self.__view.lbl_error.config(text=vigased, fg="red")
+        self.__view.lbl_result.config(text=self.__model.correct_letters)
+        print(self.__model.correct_letters)
+        self.__view.lbl_result['text'] = " ".join(self.__model.correct_letters).upper()
+
         self.__view.char_input.delete(0, 'end')
         self.__view.change_image(self.__model.wrong_guesses)
         self.game_over()
@@ -80,9 +81,9 @@ class Controller:
     # TODO Saada sisestatud mängija nimi ja mängu aeg sekundites mudelisse
     # TODO kus toimub kogu muu tegevus kasutajanimega
     def game_over(self):
-        if self.__model.hidden_word == self.__model.random_word:
+        if self.__model.random_word == self.__model.list_to_string():
             self.btn_cancel_click()
-            show_message('won')
+            show_message('won')     # # View all on show_message
             player_name = simpledialog.askstring("Mäng läbi!:", "Sisesta oma nimi:")
             if player_name:
                 self.__model.add_player_score(player_name, self.__game_time.counter)
