@@ -21,15 +21,10 @@ class Model:
         self.__typed_letters = []
         self.__wrong_letters = []
         self.__wrong_guesses = 0
-        self.__user_found_letters = []
-        self.__hidden_word = ""
-
-        self.__random_word = ''
-        self.__typed_letters = []
-        self.__wrong_letters = []
-        self.__wrong_guesses = 0
         self.__correct_letters = []
         self.__hidden_word = ""
+
+
     @property
     def database(self):
         return self.__database
@@ -56,7 +51,7 @@ class Model:
 
     @property
     def correct_letters(self):
-        return self.__user_found_letters
+        return self.__correct_letters
 
     @property
     def hidden_word(self):
@@ -97,7 +92,6 @@ class Model:
     #  TODO Seadistab mõningate muutujate algväärtused (vaata ___init__ kolme viimast .
     #  TODO Neljas muutuja on eelmine rida)
     #  TODO Seadistab ühe muutuja nii et iga tähe asemel paneb allkiriipsu mida näidata aknas äraarvatavas sõnas (LIST)
-
     def setup_new_game(self):   # Meetod, mis seadistab uue mängu
         self.__random_word = self.get_random_word()
         print(self.random_word)
@@ -105,7 +99,7 @@ class Model:
         self.__typed_letters = []
         self.__wrong_letters = []
         self.__wrong_guesses = 0
-        self.__user_found_letters = ['_' for _ in range(len(self.random_word))]
+        self.__correct_letters = list("_" * len(self.__random_word))
 
     #  TODO Meetod mis seadistab juhusliku sõna muutujasse
     #  TODO Teeb andmebaasi ühenduse ja pärib sealt ühe juhusliku sõna ning kirjutab selle muutujasse
@@ -129,7 +123,21 @@ class Model:
     #  TODO (me saame sisestada pika teksti aga esimene täht on oluline!)
     #  TODO Kui täht on otsitavas sõnas, siis asneda tulemuses allkriips õige tähega.
     #  TODO kui tähte polnud, siis vigade arv kasvab +1 ning lisa vigane täht eraldi listi
-    def process_user_input(self, user_input):
+    def process_user_input(self, text):
+        if text:
+            guess = text[0].strip().lower()
+            self.__typed_letters.append(guess)
+            word_letters = list(self.__random_word.lower())
+            if guess in word_letters:
+                for index, letter in enumerate(word_letters):
+                    if guess == letter:
+                        self.__correct_letters[index] = guess
+            else:
+                self.__wrong_guesses += 1
+                if guess in self.__typed_letters and guess not in self.__wrong_letters:
+                    self.__wrong_letters.append(guess)
+
+        """
         if user_input:
             letter = user_input[0].lower()
             if letter in self.__typed_letters:
@@ -139,7 +147,7 @@ class Model:
             if letter in self.random_word:
                 for i, char in enumerate(self.random_word):
                     if char == letter:
-                        self.__user_found_letters[i] = letter
+                        self.__found_letters[i] = letter
                 new_hidden_word = ""
                 for i, char1 in enumerate(self.random_word):
                     if char1 == letter:
@@ -153,7 +161,7 @@ class Model:
             else:
                 self.__wrong_guesses += 1
                 self.__wrong_letters.append(letter)
-
+"""
     #  TODO Meetod mis tagastab vigaste tähtede listi asemel tulemuse stringina. ['A', 'B', 'C'] => A, B, C
     def list_to_string(self):
         return ', '.join(self.__wrong_letters)
