@@ -17,13 +17,19 @@ class Model:
         # TODO kõik sisestatud tähed (list)
         #  TODO vigade lugeja (s.h. pildi id)
         #  TODO kasutaja leitud tähed (visuaal muidu on seal allkriips _)
-        self.random_word = ''
+        self.__random_word = ''
         self.__typed_letters = []
         self.__wrong_letters = []
-        self.wrong_guesses = 0
+        self.__wrong_guesses = 0
         self.__user_found_letters = []
-        self.hidden_word = ""
+        self.__hidden_word = ""
 
+        self.__random_word = ''
+        self.__typed_letters = []
+        self.__wrong_letters = []
+        self.__wrong_guesses = 0
+        self.__correct_letters = []
+        self.__hidden_word = ""
     @property
     def database(self):
         return self.__database
@@ -31,6 +37,30 @@ class Model:
     @property
     def image_files(self):
         return self.__image_files
+
+    @property
+    def random_word(self):
+        return self.__random_word
+
+    @property
+    def typed_letters(self):
+        return self.__typed_letters
+
+    @property
+    def wrong_letters(self):
+        return self.__wrong_letters
+
+    @property
+    def wrong_guesses(self):
+        return self.__wrong_guesses
+
+    @property
+    def correct_letters(self):
+        return self.__user_found_letters
+
+    @property
+    def hidden_word(self):
+        return self.__hidden_word
 
     @database.setter
     def database(self, value):
@@ -67,13 +97,14 @@ class Model:
     #  TODO Seadistab mõningate muutujate algväärtused (vaata ___init__ kolme viimast .
     #  TODO Neljas muutuja on eelmine rida)
     #  TODO Seadistab ühe muutuja nii et iga tähe asemel paneb allkiriipsu mida näidata aknas äraarvatavas sõnas (LIST)
-    def setup_new_game(self):   #  Meetod, mis seadistab uue mängu
-        self.random_word = self.get_random_word()
+
+    def setup_new_game(self):   # Meetod, mis seadistab uue mängu
+        self.__random_word = self.get_random_word()
         print(self.random_word)
-        self.hidden_word = len(self.random_word) * '-'
+        self.__hidden_word = len(self.random_word) * '-'
         self.__typed_letters = []
         self.__wrong_letters = []
-        self.wrong_guesses = 0
+        self.__wrong_guesses = 0
         self.__user_found_letters = ['_' for _ in range(len(self.random_word))]
 
     #  TODO Meetod mis seadistab juhusliku sõna muutujasse
@@ -102,7 +133,7 @@ class Model:
         if user_input:
             letter = user_input[0].lower()
             if letter in self.__typed_letters:
-                self.wrong_guesses += 1
+                self.__wrong_guesses += 1
                 self.__wrong_letters.append(letter)
             self.__typed_letters.append(letter)
             if letter in self.random_word:
@@ -117,14 +148,14 @@ class Model:
                         new_hidden_word += self.hidden_word[i]
                     else:
                         new_hidden_word += '-'
-                self.hidden_word = new_hidden_word
+                self.__hidden_word = new_hidden_word
                 print(self.hidden_word)
             else:
-                self.wrong_guesses += 1
+                self.__wrong_guesses += 1
                 self.__wrong_letters.append(letter)
 
     #  TODO Meetod mis tagastab vigaste tähtede listi asemel tulemuse stringina. ['A', 'B', 'C'] => A, B, C
-    def get_wrong_guesses_as_string(self):
+    def list_to_string(self):
         return ', '.join(self.__wrong_letters)
 
     #  TODO Meetod mis lisab mängija ja tema aja andmebaasi (Vaata Controlleris viimast  rida)
@@ -140,7 +171,7 @@ class Model:
             cursor = connection.cursor()
             cursor.execute(
                 'INSERT INTO scores (name, word, missing, seconds, date_time) VALUES (?, ?, ?, ?, ?);',
-                (player_name, self.random_word, self.get_wrong_guesses_as_string(),
+                (player_name, self.random_word, self.list_to_string(),
                  time_counter, current_time))
             connection.commit()
         except sqlite3.Error as error:
