@@ -61,13 +61,13 @@ class Controller:
         # TODO KUI on vigu tekkinud, muuda alati vigade tekst punaseks ning näita vastavalt vea numbrile õiget pilti
         # TODO on mäng läbi. MEETOD siin samas klassis.
 
-        if self.__model.wrong_guesses >= 11:
+        if self.__model.wrong_guesses == 10:
             self.btn_cancel_click()
             show_message('lose')
             return
         self.__model.process_user_input(self.__view.char_input.get())
         self.__view.lbl_result.config(text=self.__model.hidden_word)
-        vigased = "Vigased tähed: " + self.__model.get_wrong_guesses_as_string()
+        vigased = "Vigased tähed: " + self.__model.list_to_string().upper()
         self.__view.lbl_error.config(text=vigased, fg="red")
         self.__view.char_input.delete(0, 'end')
         self.__view.change_image(self.__model.wrong_guesses)
@@ -87,7 +87,3 @@ class Controller:
             if player_name:
                 self.__model.add_player_score(player_name, self.__game_time.counter)
                 return
-
-
-
-
